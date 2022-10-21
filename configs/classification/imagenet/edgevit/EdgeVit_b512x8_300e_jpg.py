@@ -33,18 +33,8 @@ model = dict(
         with_avg_pool=True,
         in_channels=288,
         loss_config=dict(
-            type='CrossEntropyLossWithLabelSmooth',
-
-            label_smooth=0),))
-    # head=dict(
-    #     type='ClsHead',
-    #     with_avg_pool=True,
-    #     in_channels=288,
-    #     loss_config={
-    #         'type': 'SoftTargetCrossEntropy',
-    #     },
-    #     with_fc=True))
-
+            type='CrossEntropyLossWithLabelSmooth', label_smooth=0),
+    ))
 
 data_train_list = 'data/imagenet_raw/meta/train_labeled.txt'
 data_train_root = 'data/imagenet_raw/train/'
@@ -124,7 +114,6 @@ lr_config = dict(
     # warmup_lr=1e-6,
     warmup_by_epoch=True,
     by_epoch=True)
-
 
 checkpoint_config = dict(interval=10)
 

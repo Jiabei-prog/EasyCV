@@ -17,12 +17,11 @@ model = dict(
         with_avg_pool=True,
         in_channels=384,
         loss_config=dict(
-            type='CrossEntropyLossWithLabelSmooth',
-
-            label_smooth=0),
+            type='CrossEntropyLossWithLabelSmooth', label_smooth=0),
     ))
 
 data = dict(
     imgs_per_gpu=128,  # total 256
     workers_per_gpu=10,
-    use_repeated_augment_sampler=True,)
+    use_repeated_augment_sampler=True,
+)
