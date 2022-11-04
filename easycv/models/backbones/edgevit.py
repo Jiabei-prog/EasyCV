@@ -1,3 +1,9 @@
+# Copyright (c) Alibaba, Inc. and its affiliates.
+"""
+This model is taken from
+https://github.com/SamsungLabs/EdgeViTs
+"""
+
 from collections import OrderedDict
 from functools import partial
 
