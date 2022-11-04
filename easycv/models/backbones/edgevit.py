@@ -1,71 +1,14 @@
-import math
 from collections import OrderedDict
 from functools import partial
 
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
-import torch.utils.checkpoint as checkpoint
-from mmcv.cnn import build_norm_layer, constant_init, kaiming_init
-from mmcv.runner import get_dist_info
 from timm.models.layers import DropPath, to_2tuple, trunc_normal_
-from timm.models.vision_transformer import _cfg
-from torch.nn.modules.batchnorm import _BatchNorm
 
+from easycv.models.utils import ConvMlp, Mlp
 from easycv.utils.checkpoint import load_checkpoint
 from easycv.utils.logger import get_root_logger
 from ..registry import BACKBONES
-from ..utils import build_conv_layer
-
-
-class Mlp(nn.Module):
-
-    def __init__(self,
-                 in_features,
-                 hidden_features=None,
-                 out_features=None,
-                 act_layer=nn.GELU,
-                 drop=0.):
-        super().__init__()
-        out_features = out_features or in_features
-        hidden_features = hidden_features or in_features
-        self.fc1 = nn.Linear(in_features, hidden_features)
-        self.act = act_layer()
-        self.fc2 = nn.Linear(hidden_features, out_features)
-        self.drop = nn.Dropout(drop)
-
-    def forward(self, x):
-        x = self.fc1(x)
-        x = self.act(x)
-        x = self.drop(x)
-        x = self.fc2(x)
-        x = self.drop(x)
-        return x
-
-
-class CMlp(nn.Module):
-
-    def __init__(self,
-                 in_features,
-                 hidden_features=None,
-                 out_features=None,
-                 act_layer=nn.GELU,
-                 drop=0.):
-        super().__init__()
-        out_features = out_features or in_features
-        hidden_features = hidden_features or in_features
-        self.fc1 = nn.Conv2d(in_features, hidden_features, 1)
-        self.act = act_layer()
-        self.fc2 = nn.Conv2d(hidden_features, out_features, 1)
-        self.drop = nn.Dropout(drop)
-
-    def forward(self, x):
-        x = self.fc1(x)
-        x = self.act(x)
-        x = self.drop(x)
-        x = self.fc2(x)
-        x = self.drop(x)
-        return x
 
 
 class GlobalSparseAttn(nn.Module):
@@ -154,7 +97,7 @@ class LocalAgg(nn.Module):
             drop_path) if drop_path > 0. else nn.Identity()
         self.norm2 = nn.BatchNorm2d(dim)
         mlp_hidden_dim = int(dim * mlp_ratio)
-        self.mlp = CMlp(
+        self.mlp = ConvMlp(
             in_features=dim,
             hidden_features=mlp_hidden_dim,
             act_layer=act_layer,

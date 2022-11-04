@@ -8,16 +8,6 @@ log_config = dict(
 # model settings
 model = dict(
     type='Classification',
-    # train_preprocess=['mixUp'],
-    # mixup_cfg=dict(
-    #     mixup_alpha=0.8,
-    #     cutmix_alpha=1.0,
-    #     cutmix_minmax=None,
-    #     prob=1.0,
-    #     switch_prob=0.5,
-    #     mode='batch',
-    #     label_smoothing=0.1,
-    #     num_classes=1000),
     backbone=dict(
         type='EdgeVit',
         depth=[1, 1, 3, 2],
@@ -40,7 +30,6 @@ data_train_list = 'data/imagenet_raw/meta/train_labeled.txt'
 data_train_root = 'data/imagenet_raw/train/'
 data_test_list = 'data/imagenet_raw/meta/val_labeled.txt'
 data_test_root = 'data/imagenet_raw/validation/'
-data_all_list = 'data/imagenet_raw/meta/all_labeled.txt'
 data_root = 'data/imagenet_raw/'
 
 dataset_type = 'ClsDataset'
@@ -70,7 +59,7 @@ test_pipeline = [
 ]
 
 data = dict(
-    imgs_per_gpu=1024,  # total 256
+    imgs_per_gpu=512,
     workers_per_gpu=10,
     use_repeated_augment_sampler=True,
     train=dict(
